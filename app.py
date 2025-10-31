@@ -538,14 +538,15 @@ def main():
         else:
             display_df = mean_rul_per_engine.sort_values('engine_id')
         
-        # Display table
+        # FIXED: Display table without background_gradient (no matplotlib required)
+        # Option 1: Simple formatting without gradient
         st.dataframe(
             display_df.style.format({
                 'mean_predicted_rul': '{:.2f}',
                 'min_predicted_rul': '{:.2f}',
                 'max_predicted_rul': '{:.2f}',
                 'std_predicted_rul': '{:.2f}'
-            }).background_gradient(subset=['mean_predicted_rul'], cmap='RdYlGn'),
+            }),
             use_container_width=True,
             height=400
         )
@@ -847,8 +848,8 @@ def main():
         **Problem**: Model or scaler file not found
         
         **Solution**:
-        - Ensure `final_rul_model_fixed.h5` exists in the same directory as this app
-        - Ensure `scaler_fixed.pkl` exists in the same directory
+        - Ensure `final_rul_model_compatible.h5` exists at: `{MODEL_PATH}`
+        - Ensure `scaler_fixed.pkl` exists at: `{SCALER_PATH}`
         - Check file names match exactly (case-sensitive)
         - Update `MODEL_PATH` and `SCALER_PATH` at the top of the code if files are elsewhere
         
@@ -964,7 +965,7 @@ def main():
         ## 📞 System Information
         
         **Model Configuration:**
-        - Window Size: 60 cycles
+        - Window Size: {WINDOW_SIZE} cycles
         - Model File: `{MODEL_PATH}`
         - Scaler File: `{SCALER_PATH}`
         
@@ -1018,9 +1019,9 @@ def main():
         To modify system settings, edit these variables at the top of the code:
         
         ```python
-        MODEL_PATH = "final_rul_model_fixed.h5"  # Your model file path
-        SCALER_PATH = "scaler_fixed.pkl"          # Your scaler file path
-        WINDOW_SIZE = 60                          # Must match training
+        MODEL_PATH = "final_rul_model_compatible.h5"  # Your model file path
+        SCALER_PATH = "scaler_fixed.pkl"              # Your scaler file path
+        WINDOW_SIZE = 60                              # Must match training
         ```
         
         After changes, restart the app:
