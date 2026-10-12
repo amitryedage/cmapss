@@ -371,7 +371,7 @@ def main():
                 if insufficient_engines > 0:
                     st.markdown(f"""
                     <div class="warning-box">
-                        ⚠️ <b>Warning:</b> {insufficient_engines} engine(s) have fewer than {WINDOW_SIZE} cycles and will be skipped
+                         <b>Warning:</b> {insufficient_engines} engine(s) have fewer than {WINDOW_SIZE} cycles and will be skipped
                     </div>
                     """, unsafe_allow_html=True)
                 
@@ -380,7 +380,7 @@ def main():
                     st.dataframe(df.head(20), use_container_width=True)
                 
                 # Show detected columns
-                with st.expander("🔍 Detected Columns"):
+                with st.expander(" Detected Columns"):
                     col1, col2 = st.columns(2)
                     with col1:
                         st.markdown("**Identifier Columns:**")
@@ -400,8 +400,8 @@ def main():
                 # Predict button
                 col1, col2, col3 = st.columns([1, 2, 1])
                 with col2:
-                    if st.button("🚀 Run Predictions", type="primary", use_container_width=True):
-                        with st.spinner("🔄 Making predictions... This may take a few minutes..."):
+                    if st.button("  Run Predictions", type="primary", use_container_width=True):
+                        with st.spinner(" Making predictions... This may take a few minutes..."):
                             results_df, mean_rul_per_engine, stats = predict_rul(
                                 df, model, scaler, WINDOW_SIZE
                             )
@@ -416,8 +416,8 @@ def main():
                             # Success message
                             st.markdown(f"""
                             <div class="success-box">
-                                ✅ <b>Predictions Completed!</b><br><br>
-                                📊 <b>Summary:</b><br>
+                                  <b>Predictions Completed!</b><br><br>
+                                  <b>Summary:</b><br>
                                 • Engines processed: <b>{stats['processed']}</b><br>
                                 • Engines skipped: <b>{stats['skipped']}</b><br>
                                 • Total predictions: <b>{stats['total_predictions']:,}</b><br>
@@ -426,29 +426,29 @@ def main():
                             """, unsafe_allow_html=True)
                             
                             # Show critical engines immediately
-                            critical = mean_rul_per_engine[mean_rul_per_engine['health_status'] == '🔴 Critical']
+                            critical = mean_rul_per_engine[mean_rul_per_engine['health_status'] == '  Critical']
                             if len(critical) > 0:
                                 st.markdown(f"""
                                 <div class="warning-box">
-                                    🚨 <b>ALERT: {len(critical)} engine(s) require immediate attention!</b><br>
+                                      <b>ALERT: {len(critical)} engine(s) require immediate attention!</b><br>
                                     Critical engines: {', '.join(map(str, critical['engine_id'].tolist()))}
                                 </div>
                                 """, unsafe_allow_html=True)
                             
                             # Show error log if needed
                             if stats['error_logs']:
-                                with st.expander(f"⚠️ View Processing Log ({len(stats['error_logs'])} messages)"):
+                                with st.expander(f"  View Processing Log ({len(stats['error_logs'])} messages)"):
                                     for log in stats['error_logs'][:100]:
                                         st.text(log)
                                     if len(stats['error_logs']) > 100:
                                         st.info(f"... and {len(stats['error_logs']) - 100} more messages")
                             
-                            st.success("✅ Go to the 'Results & Analysis' tab to explore predictions!")
+                            st.success("  Go to the 'Results & Analysis' tab to explore predictions!")
                             
                         else:
                             st.markdown("""
                             <div class="error-box">
-                                ❌ <b>No Predictions Generated</b><br><br>
+                                  <b>No Predictions Generated</b><br><br>
                                 Possible reasons:<br>
                                 • All engines have fewer than 60 cycles<br>
                                 • Sensor data format mismatch<br>
@@ -459,15 +459,15 @@ def main():
             except Exception as e:
                 st.markdown(f"""
                 <div class="error-box">
-                    ❌ <b>Error Loading File:</b><br>{str(e)}
+                      <b>Error Loading File:</b><br>{str(e)}
                 </div>
                 """, unsafe_allow_html=True)
     
     with tab2:
-        st.header("📊 Prediction Results & Analysis")
+        st.header("  Prediction Results & Analysis")
         
         if 'results_df' not in st.session_state:
-            st.info("👆 Please upload data and run predictions in the 'Upload & Predict' tab first.")
+            st.info("  Please upload data and run predictions in the 'Upload & Predict' tab first.")
             st.stop()
         
         results_df = st.session_state['results_df']
@@ -475,7 +475,7 @@ def main():
         stats = st.session_state['stats']
         
         # Overall Summary
-        st.subheader("📈 Overall Summary")
+        st.subheader("  Overall Summary")
         col1, col2, col3, col4, col5 = st.columns(5)
         
         with col1:
@@ -485,16 +485,16 @@ def main():
         with col3:
             st.metric("Mean RUL", f"{results_df['predicted_rul'].mean():.1f}")
         with col4:
-            critical_count = len(mean_rul_per_engine[mean_rul_per_engine['health_status'] == '🔴 Critical'])
+            critical_count = len(mean_rul_per_engine[mean_rul_per_engine['health_status'] == '  Critical'])
             st.metric("Critical Engines", critical_count)
         with col5:
-            healthy_count = len(mean_rul_per_engine[mean_rul_per_engine['health_status'] == '🟢 Healthy'])
+            healthy_count = len(mean_rul_per_engine[mean_rul_per_engine['health_status'] == '  Healthy'])
             st.metric("Healthy Engines", healthy_count)
         
         st.markdown("---")
         
         # Health Status Distribution
-        st.subheader("🏥 Fleet Health Status")
+        st.subheader("  Fleet Health Status")
         col1, col2 = st.columns([1, 2])
         
         with col1:
@@ -510,9 +510,9 @@ def main():
                 names=health_counts.index,
                 title='Fleet Health Distribution',
                 color_discrete_map={
-                    '🔴 Critical': '#dc3545',
-                    '🟡 Warning': '#ffc107',
-                    '🟢 Healthy': '#28a745'
+                    '  Critical': '#dc3545',
+                    '  Warning': '#ffc107',
+                    '  Healthy': '#28a745'
                 }
             )
             st.plotly_chart(fig, use_container_width=True)
@@ -520,7 +520,7 @@ def main():
         st.markdown("---")
         
         # Engine-level Results
-        st.subheader("🔍 Detailed Engine Results")
+        st.subheader("  Detailed Engine Results")
         
         # Sort options
         col1, col2 = st.columns([3, 1])
@@ -554,7 +554,7 @@ def main():
         st.markdown("---")
         
         # Visualizations
-        st.subheader("📊 Visual Analytics")
+        st.subheader("  Visual Analytics")
         
         col1, col2 = st.columns(2)
         
@@ -587,7 +587,7 @@ def main():
         col1, col2 = st.columns(2)
         
         with col1:
-            st.markdown("#### 🔴 Top 10 Critical Engines")
+            st.markdown("####   Top 10 Critical Engines")
             lowest_rul = mean_rul_per_engine.nsmallest(10, 'mean_predicted_rul')
             fig3 = px.bar(
                 lowest_rul,
@@ -601,7 +601,7 @@ def main():
             st.plotly_chart(fig3, use_container_width=True)
         
         with col2:
-            st.markdown("#### 🟢 Top 10 Healthiest Engines")
+            st.markdown("####  Top 10 Healthiest Engines")
             highest_rul = mean_rul_per_engine.nlargest(10, 'mean_predicted_rul')
             fig4 = px.bar(
                 highest_rul,
@@ -617,7 +617,7 @@ def main():
         st.markdown("---")
         
         # Individual engine deep dive
-        st.subheader("🔎 Individual Engine Analysis")
+        st.subheader(" Individual Engine Analysis")
         
         selected_engine = st.selectbox(
             "Select an engine to analyze:",
@@ -781,9 +781,9 @@ def main():
         
         ### Health Status Categories
         
-        - **🔴 Critical** (RUL < 30 cycles): Immediate maintenance required
-        - **🟡 Warning** (30 ≤ RUL < 60 cycles): Schedule maintenance soon
-        - **🟢 Healthy** (RUL ≥ 60 cycles): No immediate action needed
+        - **  Critical** (RUL < 30 cycles): Immediate maintenance required
+        - **  Warning** (30 ≤ RUL < 60 cycles): Schedule maintenance soon
+        - ** Healthy** (RUL ≥ 60 cycles): No immediate action needed
         
         ### Output Files
         
@@ -809,7 +809,7 @@ def main():
         
         ---
         
-        ## 🔧 Technical Details
+        ##   Technical Details
         
         ### Prediction Method
         
